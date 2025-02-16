@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -37,12 +39,24 @@ public class SmokeTest {
                 }
             }
         } catch (IOException e) {
-            logger.error("An IO exception was thrown.\n{}\n{}", e.getMessage(), e.getStackTrace());
+            logger.fatal("An IO exception was thrown by the SocketServer. No attempt will be made to reopen the socket.\n{}\n{}", e.getMessage(), e.getStackTrace());
         }
     }
 
     private static void manageSocket(Socket socket) {
+        try {
+            InputStream input = socket.getInputStream();
+            OutputStream output = socket.getOutputStream();
+            int inputByte;
+            do {
+                inputByte = input.read();
+                output.write(inputByte);
+            } while (inputByte != -1);
 
+            socket.close();
+        } catch (IOException e) {
+            logger.fatal("An IO exception was thrown by a Socket or one of its streams.\n{}\n{}", e.getMessage(), e.getStackTrace());
+        }
     }
 
     public static void stop() {
