@@ -3,9 +3,7 @@ package proto.hackers.part01_PrimeTime;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,12 +32,18 @@ public class PrimeTime {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             logger.info("Started on port {}.", port);
 
+            JsonMapper jsonMapper = JsonMapper.builder()
+                    .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+                    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                    .disable(MapperFeature.ALLOW_COERCION_OF_SCALARS)
+                    .build();
+
             serverSocket.setSoTimeout(TIMEOUT);
 
             while (Running) {
                 try {
                     Socket socket = serverSocket.accept();
-                    new Thread(() -> manageSocket(socket)).start();
+                    new Thread(() -> manageSocket(socket, jsonMapper)).start();
                 } catch (SocketTimeoutException e) {
                     logger.trace("Socket timed out (timeout: {}) in thread {}.", TIMEOUT, Thread.currentThread().toString());
                 }
@@ -49,61 +53,37 @@ public class PrimeTime {
         }
     }
 
-    private static void manageSocket(Socket socket) {
-        ObjectMapper jsonMapper = JsonMapper.builder()
-                .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .disable(MapperFeature.ALLOW_COERCION_OF_SCALARS)
-                .build();
-        TypeFactory typeFactory = jsonMapper.getTypeFactory();
-
+    private static void manageSocket(Socket socket, JsonMapper jsonMapper) {
         try {
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream());
+
             while (!socket.isClosed()) {
                 String line = input.readLine();
 
-                if (line == null) {
-                    logger.debug("null input received.");
+                ClientMessage clientMessage = parseClientMessage(line, jsonMapper);
+
+                if (clientMessage == null) {
+                    logger.debug("\"{}\" is malformed.", line);
+
                     output.write("{}\n".getBytes());
                     output.flush();
                     socket.close();
-                    break;
-                }
-
-                ClientMessage clientMessage;
-
-                try {
-                    clientMessage = jsonMapper.readValue(line, typeFactory.constructType(ClientMessage.class));
-                } catch (JsonProcessingException e) {
-                    logger.debug("\"{}\" is a malformed JSON.", line);
-                    output.write("{}\n".getBytes());
-                    output.flush();
-                    socket.close();
-                    break;
-                }
-
-                ServerMessage serverMessage;
-
-                if (!Objects.equals(clientMessage.getMethod(), VALID_METHOD)) {
-                    logger.debug("\"{}\" has an invalid method.", line);
-
-                    output.write("{}".getBytes());
-                    socket.close();
-                    break;
-                }
-
-                if (isPrime(clientMessage.getNumber())) {
-                    logger.debug("\"{}\" is valid and prime.", line);
-                    serverMessage = new ServerMessage(VALID_METHOD, true);
                 } else {
-                    logger.debug("\"{}\" is not prime.", line);
-                    serverMessage = new ServerMessage(VALID_METHOD, false);
-                }
+                    ServerMessage serverMessage;
 
-                String messageString = jsonMapper.writeValueAsString(serverMessage) + "\n";
-                output.write(messageString.getBytes());
-                output.flush();
+                    if (isPrime(clientMessage.getNumber())) {
+                        logger.debug("\"{}\" is valid and prime.", line);
+                        serverMessage = new ServerMessage(VALID_METHOD, true);
+                    } else {
+                        logger.debug("\"{}\" is valid and not prime.", line);
+                        serverMessage = new ServerMessage(VALID_METHOD, false);
+                    }
+
+                    String messageString = jsonMapper.writeValueAsString(serverMessage) + "\n";
+                    output.write(messageString.getBytes());
+                    output.flush();
+                }
             }
 
             socket.close();
@@ -111,6 +91,26 @@ public class PrimeTime {
             logger.fatal("An IO exception was thrown by a Socket or one of its streams.\n{}\n{}", e.getMessage(), e.getStackTrace());
         }
 
+    }
+
+    private static ClientMessage parseClientMessage(String line, JsonMapper jsonMapper) {
+        if (line == null) {
+            return null;
+        }
+
+        ClientMessage clientMessage;
+
+        try {
+            clientMessage = jsonMapper.readValue(line, jsonMapper.getTypeFactory().constructType(ClientMessage.class));
+        } catch (JsonProcessingException e) {
+            return null;
+        }
+
+        if (Objects.equals(clientMessage.getMethod(), VALID_METHOD)) {
+            return null;
+        }
+
+        return clientMessage;
     }
 
     private static boolean isPrime(double number) {
