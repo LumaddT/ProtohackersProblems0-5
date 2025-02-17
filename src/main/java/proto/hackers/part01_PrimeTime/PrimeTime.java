@@ -85,13 +85,11 @@ public class PrimeTime {
                     break;
                 }
 
-                logger.debug("Testing {} for primality.", clientMessage.getNumber());
-
                 if (isPrime(clientMessage.getNumber())) {
-                    logger.debug("{} is prime.", clientMessage.getNumber());
+                    logger.debug("\"{}\" is valid and prime.", line);
                     serverMessage = new ServerMessage(VALID_METHOD, true);
                 } else {
-                    logger.debug("{} is not prime.", clientMessage.getNumber());
+                    logger.debug("\"{}\" is not prime.", line);
                     serverMessage = new ServerMessage(VALID_METHOD, false);
                 }
 
