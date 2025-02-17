@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.Objects;
 
 public class PrimeTime {
     private static final Logger logger = LogManager.getLogger();
@@ -77,7 +78,7 @@ public class PrimeTime {
 
                 ServerMessage serverMessage;
 
-                if (!clientMessage.getMethod().equals(VALID_METHOD)) {
+                if (!Objects.equals(clientMessage.getMethod(), VALID_METHOD)) {
                     logger.debug("\"{}\" has an invalid method.", line);
 
                     output.write("{}".getBytes());
