@@ -60,7 +60,7 @@ public class MeansToAnEnd {
                 do {
                     message[currentByte] = input.read();
                     currentByte++;
-                    currentByte %= 9;
+                    currentByte %= MESSAGE_LENGTH;
                 } while (currentByte != 0);
 
                 ClientMessage clientMessage = decodeClientMessage(message);
@@ -69,11 +69,15 @@ public class MeansToAnEnd {
                     continue;
                 }
 
+                logger.debug("Received {}.", clientMessage.toString());
+
                 switch (clientMessage.getMessageType()) {
                     case INSERT -> pricesHolder.put(clientMessage.getFirstValue(), clientMessage.getSecondValue());
                     case QUERY -> {
                         int mean = pricesHolder.get(clientMessage.getFirstValue(), clientMessage.getSecondValue());
                         byte[] serverMessage = encodeServerMessage(mean);
+
+                        logger.debug("Responded {} to {}.", mean, clientMessage.toString());
                         output.write(serverMessage);
                     }
                 }
