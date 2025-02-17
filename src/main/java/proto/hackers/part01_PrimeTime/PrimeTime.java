@@ -106,7 +106,7 @@ public class PrimeTime {
             return null;
         }
 
-        if (Objects.equals(clientMessage.getMethod(), VALID_METHOD)) {
+        if (!Objects.equals(clientMessage.getMethod(), VALID_METHOD)) {
             return null;
         }
 
