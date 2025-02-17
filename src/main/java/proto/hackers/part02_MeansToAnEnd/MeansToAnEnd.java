@@ -52,49 +52,54 @@ public class MeansToAnEnd {
             InputStream input = socket.getInputStream();
             OutputStream output = socket.getOutputStream();
 
-            int currentByte = 0;
-            int[] message = new int[MESSAGE_LENGTH];
             PricesHolder pricesHolder = new PricesHolder();
 
             while (true) {
-                do {
-                    message[currentByte] = input.read();
-                    currentByte++;
-                    currentByte %= MESSAGE_LENGTH;
-                } while (currentByte != 0);
-
-                ClientMessage clientMessage = decodeClientMessage(message);
-
-                if (clientMessage == null) {
-                    continue;
-                }
-
-                logger.debug("Received {}.", clientMessage.toString());
-
-                switch (clientMessage.getMessageType()) {
-                    case INSERT -> pricesHolder.put(clientMessage.getFirstValue(), clientMessage.getSecondValue());
-                    case QUERY -> {
-                        int mean = pricesHolder.get(clientMessage.getFirstValue(), clientMessage.getSecondValue());
-                        byte[] serverMessage = encodeServerMessage(mean);
-
-                        logger.debug("Responded {} to {}.", mean, clientMessage.toString());
-                        output.write(serverMessage);
-                    }
-                }
+                processPacket(input, output, pricesHolder);
             }
         } catch (IOException e) {
             logger.fatal("An IO exception was thrown by a Socket or one of its streams.\n{}\n{}", e.getMessage(), e.getStackTrace());
         }
     }
 
+    private static void processPacket(InputStream input, OutputStream output, PricesHolder pricesHolder) throws IOException {
+        int currentByte = 0;
+        int[] message = new int[MESSAGE_LENGTH];
+
+        while (currentByte != 9) {
+            message[currentByte] = input.read();
+            currentByte++;
+        }
+
+        ClientMessage clientMessage = decodeClientMessage(message);
+
+        if (clientMessage == null) {
+            return;
+        }
+
+        logger.debug("Received {}.", clientMessage.toString());
+
+        switch (clientMessage.getMessageType()) {
+            case INSERT -> pricesHolder.put(clientMessage.getFirstValue(), clientMessage.getSecondValue());
+            case QUERY -> {
+                int mean = pricesHolder.get(clientMessage.getFirstValue(), clientMessage.getSecondValue());
+                byte[] serverMessage = encodeServerMessage(mean);
+
+                logger.debug("Responded {} to {}.", mean, clientMessage.toString());
+                output.write(serverMessage);
+            }
+        }
+    }
+
     private static ClientMessage decodeClientMessage(int[] message) {
         ClientMessage.ClientMessageBuilder builder = ClientMessage.builder();
-        if ((char) message[0] == INSERT_CHAR) {
-            builder.MessageType(MessageTypes.INSERT);
-        } else if ((char) message[0] == QUERY_CHAR) {
-            builder.MessageType(MessageTypes.QUERY);
-        } else {
-            return null;
+
+        switch ((char) message[0]) {
+            case INSERT_CHAR -> builder.MessageType(MessageTypes.INSERT);
+            case QUERY_CHAR -> builder.MessageType(MessageTypes.QUERY);
+            default -> {
+                return null;
+            }
         }
 
         int firstValue = 0;
