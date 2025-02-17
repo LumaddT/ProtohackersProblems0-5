@@ -8,7 +8,8 @@ public class ClientMessage {
     private final String Method;
     private final double Number;
 
-    public ClientMessage(@JsonProperty(value = "method", required = true) String method, @JsonProperty(value = "number", required = true) double number) {
+    public ClientMessage(@JsonProperty(value = "method", required = true) String method,
+                         @JsonProperty(value = "number", required = true) double number) {
         Method = method;
         Number = number;
     }

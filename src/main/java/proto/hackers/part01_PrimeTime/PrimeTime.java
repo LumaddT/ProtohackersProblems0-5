@@ -1,7 +1,10 @@
 package proto.hackers.part01_PrimeTime;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +50,10 @@ public class PrimeTime {
     }
 
     private static void manageSocket(Socket socket) {
-        ObjectMapper jsonMapper = new ObjectMapper();
+        ObjectMapper jsonMapper = JsonMapper.builder()
+                .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+                .disable(MapperFeature.ALLOW_COERCION_OF_SCALARS)
+                .build();
         TypeFactory typeFactory = jsonMapper.getTypeFactory();
 
         try {
