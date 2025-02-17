@@ -54,6 +54,14 @@ public class PrimeTime {
             BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream());
             while (!socket.isClosed()) {
                 String line = input.readLine();
+
+                if (line == null) {
+                    output.write("{}\n".getBytes());
+                    output.flush();
+                    socket.close();
+                    break;
+                }
+
                 ClientMessage clientMessage;
 
                 try {
