@@ -17,6 +17,10 @@ public class PricesHolder {
                 .filter(t -> minTimestamp <= t && t <= maxTimestamp)
                 .collect(Collectors.toSet());
 
+        if (validTimestamps.isEmpty()) {
+            return 0;
+        }
+
         long sum = validTimestamps.stream()
                 .mapToLong(Prices::get)
                 .sum();
