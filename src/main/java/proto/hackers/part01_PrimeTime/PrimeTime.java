@@ -7,7 +7,10 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -17,7 +20,8 @@ public class PrimeTime {
     private static final Logger logger = LogManager.getLogger();
 
     private static final int TIMEOUT = 1_000;
-    private static final String VALID_METHOD = "isPrime";
+
+    private static final String IS_PRIME_STRING = "isPrime";
 
     private static volatile boolean Running = false;
 
@@ -74,10 +78,10 @@ public class PrimeTime {
 
                     if (isPrime(clientMessage.getNumber())) {
                         logger.debug("\"{}\" is valid and prime.", line);
-                        serverMessage = new ServerMessage(VALID_METHOD, true);
+                        serverMessage = new ServerMessage(IS_PRIME_STRING, true);
                     } else {
                         logger.debug("\"{}\" is valid and not prime.", line);
-                        serverMessage = new ServerMessage(VALID_METHOD, false);
+                        serverMessage = new ServerMessage(IS_PRIME_STRING, false);
                     }
 
                     String messageString = jsonMapper.writeValueAsString(serverMessage) + "\n";
@@ -106,7 +110,7 @@ public class PrimeTime {
             return null;
         }
 
-        if (!Objects.equals(clientMessage.getMethod(), VALID_METHOD)) {
+        if (!Objects.equals(clientMessage.getMethod(), IS_PRIME_STRING)) {
             return null;
         }
 
@@ -122,6 +126,7 @@ public class PrimeTime {
             return false;
         }
 
+        // Of course the primality check could be better
         for (int i = 2; i <= Math.sqrt(number); i++) {
             if (number % i == 0) {
                 return false;
