@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PricesHolder {
-    private static final Map<Integer, Integer> Prices = new HashMap<>();
+    private final Map<Integer, Integer> Prices = new HashMap<>();
 
     public void put(int timestamp, int price) {
         Prices.put(timestamp, price);
