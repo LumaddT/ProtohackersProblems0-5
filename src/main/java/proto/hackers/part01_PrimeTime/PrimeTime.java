@@ -52,6 +52,7 @@ public class PrimeTime {
     private static void manageSocket(Socket socket) {
         ObjectMapper jsonMapper = JsonMapper.builder()
                 .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 .disable(MapperFeature.ALLOW_COERCION_OF_SCALARS)
                 .build();
         TypeFactory typeFactory = jsonMapper.getTypeFactory();
