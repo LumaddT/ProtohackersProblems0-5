@@ -1,4 +1,4 @@
-package proto.hackers.part02_MeansToAnEnd;
+package proto.hackers.problem02_MeansToAnEnd;
 
 import java.util.HashMap;
 import java.util.Map;

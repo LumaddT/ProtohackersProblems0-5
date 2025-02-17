@@ -1,4 +1,4 @@
-package proto.hackers.part00_SmokeTest;
+package proto.hackers.problem00_SmokeTest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

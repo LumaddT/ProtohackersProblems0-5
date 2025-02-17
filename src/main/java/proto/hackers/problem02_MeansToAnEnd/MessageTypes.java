@@ -1,4 +1,4 @@
-package proto.hackers.part02_MeansToAnEnd;
+package proto.hackers.problem02_MeansToAnEnd;
 
 public enum MessageTypes {
     INSERT, QUERY

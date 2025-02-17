@@ -2,7 +2,7 @@ package proto.hackers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import proto.hackers.part02_MeansToAnEnd.MeansToAnEnd;
+import proto.hackers.problem02_MeansToAnEnd.MeansToAnEnd;
 
 @SuppressWarnings("CommentedOutCode")
 public class Main {

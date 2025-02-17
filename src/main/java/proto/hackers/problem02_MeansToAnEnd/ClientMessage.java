@@ -1,4 +1,4 @@
-package proto.hackers.part02_MeansToAnEnd;
+package proto.hackers.problem02_MeansToAnEnd;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package proto.hackers.part01_PrimeTime;
+package proto.hackers.problem01_PrimeTime;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;

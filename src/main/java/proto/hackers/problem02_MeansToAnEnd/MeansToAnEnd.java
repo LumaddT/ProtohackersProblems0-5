@@ -1,4 +1,4 @@
-package proto.hackers.part02_MeansToAnEnd;
+package proto.hackers.problem02_MeansToAnEnd;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
