@@ -56,6 +56,7 @@ public class PrimeTime {
                 String line = input.readLine();
 
                 if (line == null) {
+                    logger.debug("null input received.");
                     output.write("{}\n".getBytes());
                     output.flush();
                     socket.close();
@@ -115,7 +116,7 @@ public class PrimeTime {
             return false;
         }
 
-        for (int i = 2; i < Math.sqrt(number); i++) {
+        for (int i = 2; i <= Math.sqrt(number); i++) {
             if (number % i == 0) {
                 return false;
             }
