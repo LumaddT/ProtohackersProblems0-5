@@ -48,10 +48,9 @@ public class SmokeTest {
             InputStream input = socket.getInputStream();
             OutputStream output = socket.getOutputStream();
             int inputByte;
-            do {
-                inputByte = input.read();
+            while ((inputByte = input.read()) != -1) {
                 output.write(inputByte);
-            } while (inputByte != -1);
+            }
 
             socket.close();
         } catch (IOException e) {
