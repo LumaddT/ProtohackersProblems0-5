@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
-public class ClientMessage {
+class ClientMessage {
     private final String Method;
     private final double Number;
 

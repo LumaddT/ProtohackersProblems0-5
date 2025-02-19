@@ -2,7 +2,7 @@ package proto.hackers.problem01_PrimeTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ServerMessage {
+class ServerMessage {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     @JsonProperty("method")
     private final String Method;

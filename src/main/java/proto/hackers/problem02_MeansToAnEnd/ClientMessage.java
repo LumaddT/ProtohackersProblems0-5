@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class ClientMessage {
+class ClientMessage {
     private final MessageTypes MessageType;
     private final int FirstValue;
     private final int SecondValue;

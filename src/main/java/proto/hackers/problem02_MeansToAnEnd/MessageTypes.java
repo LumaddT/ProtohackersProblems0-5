@@ -1,5 +1,5 @@
 package proto.hackers.problem02_MeansToAnEnd;
 
-public enum MessageTypes {
+enum MessageTypes {
     INSERT, QUERY
 }
