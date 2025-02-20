@@ -55,6 +55,8 @@ public class UnusualDatabaseProgram {
 
         String clientMessage = new String(packet.getData(), 0, packet.getLength()).trim();
 
+        logger.debug("Received \"{}\".", clientMessage);
+
         if (clientMessage.contains("=")) {
             String[] splitClientMessage = clientMessage.split("=", 2);
             logger.debug("Putting \"{}\" in the database.", clientMessage);
