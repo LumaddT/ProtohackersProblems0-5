@@ -8,6 +8,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+// TODO: logging here is noisy. It happens more often than expected to read and send messages from and to
+// disconnected users. This doesn't cause the program to die or the puzzle to fail, but it looks bad in the console
 public class BudgetChat {
     private static final Logger logger = LogManager.getLogger();
 
