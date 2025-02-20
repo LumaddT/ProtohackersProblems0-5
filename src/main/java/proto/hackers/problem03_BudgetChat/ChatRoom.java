@@ -21,6 +21,7 @@ class ChatRoom {
     private static final byte[] GREETING = "Welcome to Budget Chat! What shall I call you?\n".getBytes();
     private static final String ROOM_CONTAINS_FORMAT_STRING = "* The room contains: %s\n";
     private static final String USER_CONNECTED_FORMAT_STRING = "* %s has entered the room\n";
+    private static final String USER_LEFT_FORMAT_STRING = "* %s has left the room\n";
     private static final String MESSAGE_FORMAT_STRING = "[%s] %s\n";
 
     private static final int NAME_MAX_LENGTH = 24;
@@ -148,8 +149,7 @@ class ChatRoom {
             String message = user.getMessage();
 
             if (message == null) {
-                user.disconnect();
-                NamesToUsers.remove(user.getName());
+                disconnectUser(user);
             } else {
                 broadcastMessage(message, user.getName());
             }
@@ -158,9 +158,21 @@ class ChatRoom {
 
     public static void disconnectAll() {
         for (ChatUser user : NamesToUsers.values()) {
-            user.disconnect();
+            disconnectUser(user);
         }
 
         NamesToUsers.clear();
+    }
+
+    private static void disconnectUser(ChatUser userToDisconnect) {
+        logger.debug("Disconnecting {}.", userToDisconnect.getName());
+        NamesToUsers.remove(userToDisconnect.getName());
+        userToDisconnect.disconnect();
+
+        String message = USER_LEFT_FORMAT_STRING.formatted(userToDisconnect.getName());
+
+        for (String user : NamesToUsers.keySet()) {
+            sendMessage(message, user);
+        }
     }
 }
