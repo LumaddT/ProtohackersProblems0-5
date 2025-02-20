@@ -46,6 +46,11 @@ class ChatRoom {
 
         if (!isNameValid(name)) {
             logger.debug("Invalid name {} rejected.", name);
+            try {
+                socket.close();
+            } catch (IOException e) {
+                logger.error("An IO exception was thrown while closing the socket for {} (user not added due to illegal name).\n{}\n{}", name, e.getMessage(), e.getStackTrace());
+            }
             return;
         }
 
