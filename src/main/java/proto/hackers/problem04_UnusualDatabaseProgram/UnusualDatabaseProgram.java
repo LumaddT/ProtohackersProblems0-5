@@ -53,7 +53,7 @@ public class UnusualDatabaseProgram {
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
         socket.receive(packet);
 
-        String clientMessage = new String(packet.getData(), 0, packet.getLength()).trim();
+        String clientMessage = new String(packet.getData(), 0, packet.getLength());
 
         logger.debug("Received \"{}\".", clientMessage);
 
