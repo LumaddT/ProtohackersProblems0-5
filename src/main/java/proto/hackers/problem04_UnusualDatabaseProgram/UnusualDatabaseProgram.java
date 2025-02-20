@@ -20,6 +20,7 @@ public class UnusualDatabaseProgram {
 
     private static final String VERSION = "My Key-Value Store 1.0";
     private static final int MAX_LENGTH = 1_000;
+
     private static final Map<String, String> DATABASE = new HashMap<>();
 
     public static void run(int port) {
@@ -48,12 +49,12 @@ public class UnusualDatabaseProgram {
     }
 
     private static void checkSocket(DatagramSocket socket) throws IOException {
-        byte[] buf = new byte[MAX_LENGTH];
+        byte[] clientBytes = new byte[MAX_LENGTH];
 
-        DatagramPacket packet = new DatagramPacket(buf, buf.length);
-        socket.receive(packet);
+        DatagramPacket clientPacket = new DatagramPacket(clientBytes, clientBytes.length);
+        socket.receive(clientPacket);
 
-        String clientMessage = new String(packet.getData(), 0, packet.getLength());
+        String clientMessage = new String(clientPacket.getData(), 0, clientPacket.getLength());
 
         logger.debug("Received \"{}\".", clientMessage);
 
@@ -72,16 +73,16 @@ public class UnusualDatabaseProgram {
             String serverMessageString = clientMessage + '=' + value;
 
             logger.debug("Retrieving \"{}\" from the database.", serverMessageString);
+
             byte[] serverMessage = serverMessageString.getBytes();
-            InetAddress address = packet.getAddress();
-            int port = packet.getPort();
+            InetAddress address = clientPacket.getAddress();
+            int port = clientPacket.getPort();
 
-            packet = new DatagramPacket(serverMessage, serverMessage.length, address, port);
+            DatagramPacket serverPacket = new DatagramPacket(serverMessage, serverMessage.length, address, port);
 
-            socket.send(packet);
+            socket.send(serverPacket);
         }
     }
-
 
     public static void stop() {
         if (Running) {
