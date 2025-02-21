@@ -14,7 +14,7 @@ class MobChatUser {
     private static final Logger logger = LogManager.getLogger();
 
     private static final String BOGUS_ADDRESS = "7YWHMfk9JZe0LM0g1ZauHuiSxhI";
-    private static final String ADDRESS_REGEX = "(?:^| )7[a-zA-Z0-9]{25,34}(?:$| )";
+    private static final String ADDRESS_REGEX = "(?<=^| )7[a-zA-Z0-9]{25,34}(?=$| )";
 
     private final java.net.Socket DownatreamSocket;
     private final BufferedReader DownstreamInputStream;
