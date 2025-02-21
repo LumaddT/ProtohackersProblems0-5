@@ -55,6 +55,10 @@ class MobChatUser {
                     }
 
                     lineBuilder.append((char) ch);
+
+                    if (ch == '\n') {
+                        break;
+                    }
                 }
 
                 if (!lineBuilder.isEmpty() && lineBuilder.charAt(lineBuilder.length() - 1) != '\n') {
