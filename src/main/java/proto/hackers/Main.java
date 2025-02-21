@@ -2,7 +2,7 @@ package proto.hackers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import proto.hackers.problem04_UnusualDatabaseProgram.UnusualDatabaseProgram;
+import proto.hackers.problem05_SmokeTest.MobInTheMiddle;
 
 @SuppressWarnings("CommentedOutCode")
 public class Main {
@@ -17,7 +17,8 @@ public class Main {
 //        new Thread(() -> PrimeTime.run(10_001)).start();
 //        new Thread(() -> MeansToAnEnd.run(10_002)).start();
 //        new Thread(() -> BudgetChat.run(10_003)).start();
-        new Thread(() -> UnusualDatabaseProgram.run(10_004)).start();
+//        new Thread(() -> UnusualDatabaseProgram.run(10_004)).start();
+        new Thread(() -> MobInTheMiddle.run(10_005)).start();
     }
 
     private static void shutdownRoutine() {
@@ -27,7 +28,8 @@ public class Main {
 //        PrimeTime.stop();
 //        MeansToAnEnd.stop();
 //        BudgetChat.stop();
-        UnusualDatabaseProgram.stop();
+//        UnusualDatabaseProgram.stop();
+        MobInTheMiddle.stop();
 
         logger.info("Have a nice day!.");
     }
