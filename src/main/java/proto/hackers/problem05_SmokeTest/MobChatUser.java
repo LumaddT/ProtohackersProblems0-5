@@ -57,7 +57,7 @@ class MobChatUser {
                     lineBuilder.append((char) ch);
                 }
 
-                if (lineBuilder.charAt(lineBuilder.length() - 1) != '\n') {
+                if (!lineBuilder.isEmpty() && lineBuilder.charAt(lineBuilder.length() - 1) != '\n') {
                     logger.debug("Disconnected a user while managing downstream input due to null input.");
                     this.disconnect();
                     break;
