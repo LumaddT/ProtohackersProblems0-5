@@ -46,17 +46,27 @@ class MobChatUser {
     private void manageDownstreamInput() {
         while (Alive) {
             try {
-                String line = DownstreamInputStream.readLine();
+                StringBuilder lineBuilder = new StringBuilder();
 
-                if (line == null) {
+                while (true) {
+                    int ch = DownstreamInputStream.read();
+                    if (ch == -1) {
+                        break;
+                    }
+
+                    lineBuilder.append((char) ch);
+                }
+
+                if (lineBuilder.charAt(lineBuilder.length() - 1) != '\n') {
                     logger.debug("Disconnected a user while managing downstream input due to null input.");
                     this.disconnect();
                     break;
                 }
 
-                line += '\n';
+                String line = lineBuilder.toString();
 
                 line = line.replaceAll(ADDRESS_REGEX, BOGUS_ADDRESS);
+
                 UpstreamOutputStream.write(line.getBytes());
                 UpstreamOutputStream.flush();
             } catch (IOException e) {
