@@ -69,6 +69,8 @@ class MobChatUser {
 
                 String line = lineBuilder.toString();
 
+                logger.debug("Downstream: {}.", line.trim());
+
                 line = line.replaceAll(ADDRESS_REGEX, BOGUS_ADDRESS);
 
                 UpstreamOutputStream.write(line.getBytes());
@@ -91,6 +93,9 @@ class MobChatUser {
                     this.disconnect();
                     break;
                 }
+
+                logger.debug("Upstream: {}.", line.trim());
+
 
                 line += '\n';
 
