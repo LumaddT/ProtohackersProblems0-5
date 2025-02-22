@@ -61,15 +61,13 @@ class MobChatUser {
                     }
                 }
 
-                if (!lineBuilder.isEmpty() && lineBuilder.charAt(lineBuilder.length() - 1) != '\n') {
+                if (lineBuilder.isEmpty() || lineBuilder.charAt(lineBuilder.length() - 1) != '\n') {
                     logger.debug("Disconnected a user while managing downstream input due to null input.");
                     this.disconnect();
                     break;
                 }
 
                 String line = lineBuilder.toString();
-
-                logger.debug("Downstream: {}.", line.trim());
 
                 line = line.replaceAll(ADDRESS_REGEX, BOGUS_ADDRESS);
 
@@ -94,11 +92,7 @@ class MobChatUser {
                     break;
                 }
 
-                logger.debug("Upstream: {}.", line.trim());
-
-
                 line += '\n';
-
 
                 line = line.replaceAll(ADDRESS_REGEX, BOGUS_ADDRESS);
                 DownstreamOutputStream.write(line.getBytes());
