@@ -2,7 +2,7 @@ package proto.hackers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import proto.hackers.problem05_SmokeTest.MobInTheMiddle;
+import proto.hackers.problem05_MobInTheMiddle.MobInTheMiddle;
 
 @SuppressWarnings("CommentedOutCode")
 public class Main {

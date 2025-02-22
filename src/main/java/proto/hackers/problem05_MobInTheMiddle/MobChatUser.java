@@ -1,4 +1,4 @@
-package proto.hackers.problem05_SmokeTest;
+package proto.hackers.problem05_MobInTheMiddle;
 
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +24,9 @@ class MobChatUser {
     private final BufferedReader UpstreamInputStream;
     private final BufferedOutputStream UpstreamOutputStream;
 
+    @Getter
+    private boolean Alive = true;
+
     public MobChatUser(Socket downatreamSocket, Socket upstreamSocket) throws IOException {
         DownatreamSocket = downatreamSocket;
         UpstreamSocket = upstreamSocket;
@@ -34,9 +37,6 @@ class MobChatUser {
         UpstreamInputStream = new BufferedReader(new InputStreamReader(upstreamSocket.getInputStream()));
         UpstreamOutputStream = new BufferedOutputStream(upstreamSocket.getOutputStream());
     }
-
-    @Getter
-    private boolean Alive = true;
 
     public void run() {
         new Thread(this::manageDownstreamInput).start();
