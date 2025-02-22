@@ -107,8 +107,14 @@ class MobChatUser {
     public void disconnect() {
         try {
             Alive = false;
+
             DownatreamSocket.close();
+            DownstreamInputStream.close();
             UpstreamSocket.close();
+
+            DownstreamOutputStream.close();
+            UpstreamInputStream.close();
+            UpstreamOutputStream.close();
         } catch (IOException e) {
             logger.error("An IO exception was thrown while closing a socket.\n{}\n{}", e.getMessage(), e.getStackTrace());
         }
